@@ -1,5 +1,5 @@
 ### News Hack
-## for iOS
+**for iOS**`
 
 [by Lukas Carvajal](https://lcarvajal.github.io)
 
