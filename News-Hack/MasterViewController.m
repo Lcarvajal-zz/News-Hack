@@ -8,6 +8,8 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "TFHpple.h"
+#import "Article.h"
 
 @interface MasterViewController ()
 
@@ -15,6 +17,108 @@
 @end
 
 @implementation MasterViewController
+
+// CUSTOM CLASSES
+
+-(void)loadNewYorkTimes {
+    // download webpage
+    NSURL *nytUrl = [NSURL URLWithString:@"http://www.nytimes.com/"];
+    NSData *nytHtmlData = [NSData dataWithContentsOfURL:nytUrl];
+    
+    // create parser
+    TFHpple *nytParser = [TFHpple hppleWithHTMLData:nytHtmlData];
+    
+    // array for holding nyt objects
+    NSString *nytArticleURL = @"//article/h2[@class='story-heading']/a";
+    NSArray *nytNodes = [nytParser searchWithXPathQuery:nytArticleURL];
+    
+    // loop through articles
+    NSMutableArray *nytNews = [[NSMutableArray alloc] initWithCapacity:0];
+    for (int i = 1; i < 30; i++) {
+        
+        TFHppleElement *element = [nytNodes objectAtIndex:i];
+        
+        // create nyt object
+        Article *newYorkTimes = [[Article alloc] init];
+        [nytNews addObject:newYorkTimes];
+        
+        // tites
+        newYorkTimes.title = [[element firstChild] content];
+        
+        // descriptions
+        newYorkTimes.description = [[element firstChildWithTagName:@"p"] content];
+        
+        // urls
+        newYorkTimes.url = [self translateURL: [element objectForKey:@"href"]];
+        
+    }
+    
+    // 8
+    _objects = nytNews;
+    [self.tableView reloadData];
+}
+
+-(void)loadWallStreetJournal {
+    // download webpage
+    NSURL *wsjUrl = [NSURL URLWithString:@"http://www.wsj.com/"];
+    NSData *wsjHtmlData = [NSData dataWithContentsOfURL:wsjUrl];
+    
+    // create parser
+    TFHpple *wsjParser = [TFHpple hppleWithHTMLData:wsjHtmlData];
+    
+    // array for holding nyt objects
+    NSString *wsjArticleURL = @"//a[@class='wsj-headline-link']";
+    NSArray *wsjNodes = [wsjParser searchWithXPathQuery:wsjArticleURL];
+    
+    // loop through articles
+    NSMutableArray *wsjNews = [[NSMutableArray alloc] initWithCapacity:0];
+    for (int i = 1; i < 30; i++) {
+        
+        TFHppleElement *element = [wsjNodes objectAtIndex:i];
+        
+        // create nyt object
+        Article *walStreetJournal = [[Article alloc] init];
+        [wsjNews addObject:walStreetJournal];
+        
+        // tites
+        walStreetJournal.title = [[element firstChild] content];
+        
+        // urls
+        walStreetJournal.url = [self translateURL: [element objectForKey:@"href"]];
+        
+    }
+    
+    // 8
+    _objects = wsjNews;
+    [self.tableView reloadData];
+}
+
+- (NSString*) translateURL:(NSString *)url {
+    
+    // "translate" article from japanese
+    url = [ @"http://translate.google.com/translate?sl=ja&tl=en&u=" stringByAppendingString: url];
+    
+    // download webpage
+    NSURL *exUrl = [NSURL URLWithString:url];
+    NSData *htmlData = [NSData dataWithContentsOfURL:exUrl];
+    
+    // create parser
+    TFHpple *parser = [TFHpple hppleWithHTMLData:htmlData];
+    
+    // get url from google translated iframe
+    NSString *articleURL = @"//iframe";
+    NSArray *node = [parser searchWithXPathQuery:articleURL];
+    TFHppleElement *element = [node objectAtIndex:0];
+    url = [element objectForKey:@"src"];
+    
+    // add google translate url
+    url = [@"http://translate.google.com" stringByAppendingString: url];
+    
+    return url;
+    
+}
+
+// END OF CUSTOM CLASSES
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -26,12 +130,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
-    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    [self loadWallStreetJournal];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -39,13 +139,10 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)insertNewObject:(id)sender {
-    if (!self.objects) {
-        self.objects = [[NSMutableArray alloc] init];
-    }
-    [self.objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
 }
 
 #pragma mark - Segues
@@ -53,9 +150,12 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = self.objects[indexPath.row];
-        DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
-        [controller setDetailItem:object];
+        Article *object = self.objects[indexPath.row];
+        NSString* articleUrlPass = [[NSString alloc] init];
+        articleUrlPass = object.url;
+        
+        DetailViewController *controller = segue.destinationViewController;
+        controller.articleURL = articleUrlPass;
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
@@ -72,10 +172,18 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-
-    NSDate *object = self.objects[indexPath.row];
-    cell.textLabel.text = [object description];
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
+    Article *article = [_objects objectAtIndex:indexPath.row];
+    cell.textLabel.text = article.title;
+    cell.detailTextLabel.text = article.url;
+    
     return cell;
 }
 
@@ -92,5 +200,6 @@
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
 }
+
 
 @end

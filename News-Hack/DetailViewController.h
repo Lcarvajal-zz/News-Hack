@@ -10,8 +10,8 @@
 
 @interface DetailViewController : UIViewController
 
-@property (strong, nonatomic) id detailItem;
-@property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
+@property (strong, nonatomic) NSString* articleURL;
+@property (weak, nonatomic) IBOutlet UIWebView *article;
 
 @end
 

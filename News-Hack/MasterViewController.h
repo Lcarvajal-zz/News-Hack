@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Article.h"
 
 @class DetailViewController;
 
 @interface MasterViewController : UITableViewController
+
+- (NSString*) translateURL: (NSString*) url;
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
 
