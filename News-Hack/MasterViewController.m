@@ -11,9 +11,17 @@
 #import "TFHpple.h"
 #import "Article.h"
 
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
 @interface MasterViewController ()
 
 @property NSMutableArray *objects;
+@property NSMutableArray *world;
+@property NSMutableArray *US;
+@property NSMutableArray *politics;
+@property NSMutableArray *business;
+@property NSMutableArray *opinion;
+
 @end
 
 @implementation MasterViewController
@@ -34,7 +42,7 @@
     
     // loop through articles
     NSMutableArray *nytNews = [[NSMutableArray alloc] initWithCapacity:0];
-    for (int i = 1; i < 30; i++) {
+    for (int i = 0; i < 30; i++) {
         
         TFHppleElement *element = [nytNodes objectAtIndex:i];
         
@@ -45,16 +53,13 @@
         // tites
         newYorkTimes.title = [[element firstChild] content];
         
-        // descriptions
-        newYorkTimes.description = [[element firstChildWithTagName:@"p"] content];
-        
         // urls
         newYorkTimes.url = [self translateURL: [element objectForKey:@"href"]];
         
     }
     
     // 8
-    _objects = nytNews;
+    _world = nytNews;
     [self.tableView reloadData];
 }
 
@@ -72,7 +77,7 @@
     
     // loop through articles
     NSMutableArray *wsjNews = [[NSMutableArray alloc] initWithCapacity:0];
-    for (int i = 1; i < 30; i++) {
+    for (int i = 0; i < 30; i++) {
         
         TFHppleElement *element = [wsjNodes objectAtIndex:i];
         
@@ -132,6 +137,7 @@
     [super viewDidLoad];
 
     [self loadWallStreetJournal];
+    [self loadNewYorkTimes];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -163,12 +169,56 @@
 
 #pragma mark - Table View
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *sectionHeaderView = [[UIView alloc] initWithFrame:
+                                 CGRectMake(0, 0, tableView.frame.size.width, 50.0)];
+    sectionHeaderView.backgroundColor = UIColorFromRGB(0x00079A);
+    
+    UILabel *headerLabel = [[UILabel alloc] initWithFrame:
+                            CGRectMake(15, 15, sectionHeaderView.frame.size.width, 25.0)];
+    
+    headerLabel.backgroundColor = [UIColor clearColor];
+    headerLabel.textAlignment = NSTextAlignmentCenter;
+    headerLabel.textColor = [UIColor whiteColor];
+    // [headerLabel setFont:[UIFont fontWithName:@"Verdana" size:20.0]];
+    [sectionHeaderView addSubview:headerLabel];
+    
+    switch (section) {
+        case 0:
+            headerLabel.text = @"Wall Street Journal";
+            return sectionHeaderView;
+            break;
+        case 1:
+            headerLabel.text = @"New York Times";
+            return sectionHeaderView;
+            break;
+        default:
+            break;
+    }
+    
+    return sectionHeaderView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 50.0f;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.objects.count;
+    switch (section) {
+        case 0:
+            return _objects.count;
+            break;
+        case 1:
+            return _world.count;
+            break;
+    }
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -180,9 +230,14 @@
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
-    Article *article = [_objects objectAtIndex:indexPath.row];
-    cell.textLabel.text = article.title;
-    cell.detailTextLabel.text = article.url;
+    if (indexPath.section == 0) {
+        Article *thisArticle = [_objects objectAtIndex:indexPath.row];
+        cell.textLabel.text = thisArticle.title;
+        cell.detailTextLabel.text = thisArticle.url;
+    } else if (indexPath.section == 1) {
+        Article *thisArticle = [_world objectAtIndex:indexPath.row];
+        cell.textLabel.text = thisArticle.title;
+    }
     
     return cell;
 }

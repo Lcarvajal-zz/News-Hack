@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8046B8D81B2AE15800156CB6 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8046B8D71B2AE15800156CB6 /* Settings.bundle */; };
 		80F5BA6E1B2837FB00B89FE7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA6D1B2837FB00B89FE7 /* main.m */; };
 		80F5BA711B2837FB00B89FE7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA701B2837FB00B89FE7 /* AppDelegate.m */; };
 		80F5BA741B2837FB00B89FE7 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA731B2837FB00B89FE7 /* MasterViewController.m */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8046B8D71B2AE15800156CB6 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		80F5BA681B2837FB00B89FE7 /* News-Hack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "News-Hack.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		80F5BA6C1B2837FB00B89FE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		80F5BA6D1B2837FB00B89FE7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				80F5BA7B1B2837FB00B89FE7 /* Images.xcassets */,
 				80F5BA7D1B2837FB00B89FE7 /* LaunchScreen.xib */,
 				80F5BA6B1B2837FB00B89FE7 /* Supporting Files */,
+				8046B8D71B2AE15800156CB6 /* Settings.bundle */,
 			);
 			path = "News-Hack";
 			sourceTree = "<group>";
@@ -213,6 +216,7 @@
 				TargetAttributes = {
 					80F5BA671B2837FB00B89FE7 = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = 7TX62B59X4;
 					};
 					80F5BA831B2837FB00B89FE7 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -244,6 +248,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8046B8D81B2AE15800156CB6 /* Settings.bundle in Resources */,
 				80F5BA7A1B2837FB00B89FE7 /* Main.storyboard in Resources */,
 				80F5BA7F1B2837FB00B89FE7 /* LaunchScreen.xib in Resources */,
 				80F5BA7C1B2837FB00B89FE7 /* Images.xcassets in Resources */,
@@ -399,10 +404,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = "News-Hack/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -410,10 +418,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = "News-Hack/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -470,6 +481,7 @@
 				80F5BA901B2837FB00B89FE7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		80F5BA911B2837FB00B89FE7 /* Build configuration list for PBXNativeTarget "News-HackTests" */ = {
 			isa = XCConfigurationList;
@@ -478,6 +490,7 @@
 				80F5BA931B2837FB00B89FE7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
