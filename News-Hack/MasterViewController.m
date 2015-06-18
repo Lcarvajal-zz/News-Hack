@@ -8,6 +8,7 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "SourcesViewController.h"
 #import "TFHpple.h"
 #import "Article.h"
 
@@ -21,6 +22,9 @@
 @property NSMutableArray *politics;
 @property NSMutableArray *business;
 @property NSMutableArray *opinion;
+
+@property NSUserDefaults *prefs;  //load NSUserDefaults
+@property NSMutableArray *sources;  //declare array to be stored in NSUserDefaults
 
 @end
 
@@ -135,9 +139,45 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    UIRefreshControl *refreshControl;
+    
+    if(!refreshControl) {
+        // refresh on pull down
+        refreshControl = [[UIRefreshControl alloc] init];
+        [refreshControl addTarget:self action:@selector(refresh)
+             forControlEvents:UIControlEventValueChanged];
+        self.refreshControl = refreshControl;
+    }
+    
+    // load user preferences
+    if (!_prefs) {
+        _prefs = [NSUserDefaults standardUserDefaults];
+    }
+    if (!_sources) {
+        
+        @try {
+            _sources = [[ NSMutableArray alloc] initWithArray:[_prefs arrayForKey:@"favourites"]];
+        }
+        @catch (NSException *ex) {
 
-    [self loadWallStreetJournal];
-    [self loadNewYorkTimes];
+            _sources = [[ NSMutableArray alloc] initWithObjects:@"1",@"1", nil];
+            [_prefs setObject:_sources forKey:@"favourites"];  //set the prev Array for key value "favourites"
+        }
+        
+    }
+    
+    if ([_sources[0] isEqualToString:@"1"]) {
+        [self loadWallStreetJournal];
+    }
+    
+    if ([_sources[1] isEqualToString:@"1"]) {
+        [self loadNewYorkTimes];
+    }
+    
+    // set back button for next view
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -146,9 +186,17 @@
 }
 
 
--(UIStatusBarStyle)preferredStatusBarStyle
+- (UIStatusBarStyle)preferredStatusBarStyle
 {
     return UIStatusBarStyleLightContent;
+}
+
+- (void)refresh {
+    
+    [_objects removeAllObjects];
+    [_world removeAllObjects];
+    
+    [self.view setNeedsDisplay];
 }
 
 #pragma mark - Segues
@@ -164,6 +212,10 @@
         controller.articleURL = articleUrlPass;
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
+    }
+    else if ([[segue identifier] isEqualToString:@"showSources"]) {
+        SourcesViewController *controller = segue.destinationViewController;
+        controller.sources = _sources;
     }
 }
 

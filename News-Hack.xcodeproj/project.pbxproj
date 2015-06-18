@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8046B8D81B2AE15800156CB6 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8046B8D71B2AE15800156CB6 /* Settings.bundle */; };
+		80E85AA21B32797200106AE5 /* SourcesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E85AA11B32797200106AE5 /* SourcesViewController.m */; };
 		80F5BA6E1B2837FB00B89FE7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA6D1B2837FB00B89FE7 /* main.m */; };
 		80F5BA711B2837FB00B89FE7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA701B2837FB00B89FE7 /* AppDelegate.m */; };
 		80F5BA741B2837FB00B89FE7 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA731B2837FB00B89FE7 /* MasterViewController.m */; };
@@ -35,6 +36,8 @@
 
 /* Begin PBXFileReference section */
 		8046B8D71B2AE15800156CB6 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		80E85AA01B32797200106AE5 /* SourcesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourcesViewController.h; sourceTree = "<group>"; };
+		80E85AA11B32797200106AE5 /* SourcesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourcesViewController.m; sourceTree = "<group>"; };
 		80F5BA681B2837FB00B89FE7 /* News-Hack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "News-Hack.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		80F5BA6C1B2837FB00B89FE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		80F5BA6D1B2837FB00B89FE7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -115,6 +118,8 @@
 				80F5BA7D1B2837FB00B89FE7 /* LaunchScreen.xib */,
 				80F5BA6B1B2837FB00B89FE7 /* Supporting Files */,
 				8046B8D71B2AE15800156CB6 /* Settings.bundle */,
+				80E85AA01B32797200106AE5 /* SourcesViewController.h */,
+				80E85AA11B32797200106AE5 /* SourcesViewController.m */,
 			);
 			path = "News-Hack";
 			sourceTree = "<group>";
@@ -274,6 +279,7 @@
 				80F5BAA71B283B5500B89FE7 /* XPathQuery.m in Sources */,
 				80F5BAA51B283B5500B89FE7 /* TFHpple.m in Sources */,
 				80F5BA741B2837FB00B89FE7 /* MasterViewController.m in Sources */,
+				80E85AA21B32797200106AE5 /* SourcesViewController.m in Sources */,
 				80F5BA6E1B2837FB00B89FE7 /* main.m in Sources */,
 				80F5BA771B2837FB00B89FE7 /* DetailViewController.m in Sources */,
 				80F5BA971B28388400B89FE7 /* Article.m in Sources */,

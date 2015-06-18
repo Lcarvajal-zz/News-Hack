@@ -13,10 +13,20 @@
 		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
-			<key>Wall Street Journal</key>
-			<string></string>
-			<key>SettingsShowOnLaunch</key>
-			<string></string>
+			<key>Title</key>
+			<string>Wall Street Journal</string>
+			<key>Key</key>
+			<string>wsjToggle</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>New York Times</string>
+			<key>Key</key>
+			<string>nytToggle</string>
 			<key>DefaultValue</key>
 			<true/>
 		</dict>
