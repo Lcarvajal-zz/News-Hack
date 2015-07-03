@@ -17,22 +17,34 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSLog( [_sources objectAtIndex:0] );
-    NSLog( [_sources objectAtIndex:1] );
+    // set preferences
+    _prefs = [NSUserDefaults standardUserDefaults];
+    _sources = [[ NSMutableArray alloc] initWithArray:[_prefs arrayForKey:@"favourites"]];
     
     [_switchWSJ addTarget:self action:@selector(changeWSJ:) forControlEvents:UIControlEventValueChanged];
     [_switchNYT addTarget:self action:@selector(changeNYT:) forControlEvents:UIControlEventValueChanged];
+    [_switchUSA addTarget:self action:@selector(changeUSA:) forControlEvents:UIControlEventValueChanged];
     
     // turn source switch on or off
-    if ([_sources[0] isEqualToString:@"1"])
-        [_switchWSJ setOn:YES animated:NO];
-    else
-        [_switchWSJ setOn:NO animated:NO];
+    if([self.sources count] > 0) {
+        if ([_sources[0] isEqualToString:@"1"])
+            [_switchWSJ setOn:YES animated:NO];
+        else
+            [_switchWSJ setOn:NO animated:NO];
     
-    if ([_sources[0] isEqualToString:@"1"])
-        [_switchNYT setOn:YES animated:NO];
-    else
-        [_switchNYT setOn:NO animated:NO];
+        if ([_sources[1] isEqualToString:@"1"])
+            [_switchNYT setOn:YES animated:NO];
+        else
+            [_switchNYT setOn:NO animated:NO];
+    
+        if ([_sources[2] isEqualToString:@"1"])
+            [_switchUSA setOn:YES animated:NO];
+        else
+            [_switchUSA setOn:NO animated:NO];
+    }
+    else {
+        NSLog(@"not working");
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -63,6 +75,19 @@
     
     [_prefs setObject:_sources forKey:@"favourites"];
 }
+
+// handle switch clicks
+- (void)changeUSA: (id)sender {
+    NSLog( @"touched" );
+    
+    if ([_sources[2] isEqualToString: @"1"])
+        _sources[2] = @"0";
+    else
+        _sources[2] = @"1";
+    
+    [_prefs setObject:_sources forKey:@"favourites"];
+}
+
 
 /*
 #pragma mark - Navigation

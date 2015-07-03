@@ -11,8 +11,8 @@
 		80E85AA21B32797200106AE5 /* SourcesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E85AA11B32797200106AE5 /* SourcesViewController.m */; };
 		80F5BA6E1B2837FB00B89FE7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA6D1B2837FB00B89FE7 /* main.m */; };
 		80F5BA711B2837FB00B89FE7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA701B2837FB00B89FE7 /* AppDelegate.m */; };
-		80F5BA741B2837FB00B89FE7 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA731B2837FB00B89FE7 /* MasterViewController.m */; };
-		80F5BA771B2837FB00B89FE7 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA761B2837FB00B89FE7 /* DetailViewController.m */; };
+		80F5BA741B2837FB00B89FE7 /* TopNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA731B2837FB00B89FE7 /* TopNewsViewController.m */; };
+		80F5BA771B2837FB00B89FE7 /* ArticleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F5BA761B2837FB00B89FE7 /* ArticleViewController.m */; };
 		80F5BA7A1B2837FB00B89FE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 80F5BA781B2837FB00B89FE7 /* Main.storyboard */; };
 		80F5BA7C1B2837FB00B89FE7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 80F5BA7B1B2837FB00B89FE7 /* Images.xcassets */; };
 		80F5BA7F1B2837FB00B89FE7 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 80F5BA7D1B2837FB00B89FE7 /* LaunchScreen.xib */; };
@@ -43,10 +43,10 @@
 		80F5BA6D1B2837FB00B89FE7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		80F5BA6F1B2837FB00B89FE7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		80F5BA701B2837FB00B89FE7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		80F5BA721B2837FB00B89FE7 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
-		80F5BA731B2837FB00B89FE7 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
-		80F5BA751B2837FB00B89FE7 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
-		80F5BA761B2837FB00B89FE7 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		80F5BA721B2837FB00B89FE7 /* TopNewsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TopNewsViewController.h; sourceTree = "<group>"; };
+		80F5BA731B2837FB00B89FE7 /* TopNewsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TopNewsViewController.m; sourceTree = "<group>"; };
+		80F5BA751B2837FB00B89FE7 /* ArticleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArticleViewController.h; sourceTree = "<group>"; };
+		80F5BA761B2837FB00B89FE7 /* ArticleViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArticleViewController.m; sourceTree = "<group>"; };
 		80F5BA791B2837FB00B89FE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		80F5BA7B1B2837FB00B89FE7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		80F5BA7E1B2837FB00B89FE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -109,10 +109,10 @@
 				80F5BA941B28382900B89FE7 /* Model */,
 				80F5BA6F1B2837FB00B89FE7 /* AppDelegate.h */,
 				80F5BA701B2837FB00B89FE7 /* AppDelegate.m */,
-				80F5BA721B2837FB00B89FE7 /* MasterViewController.h */,
-				80F5BA731B2837FB00B89FE7 /* MasterViewController.m */,
-				80F5BA751B2837FB00B89FE7 /* DetailViewController.h */,
-				80F5BA761B2837FB00B89FE7 /* DetailViewController.m */,
+				80F5BA721B2837FB00B89FE7 /* TopNewsViewController.h */,
+				80F5BA731B2837FB00B89FE7 /* TopNewsViewController.m */,
+				80F5BA751B2837FB00B89FE7 /* ArticleViewController.h */,
+				80F5BA761B2837FB00B89FE7 /* ArticleViewController.m */,
 				80F5BA781B2837FB00B89FE7 /* Main.storyboard */,
 				80F5BA7B1B2837FB00B89FE7 /* Images.xcassets */,
 				80F5BA7D1B2837FB00B89FE7 /* LaunchScreen.xib */,
@@ -221,7 +221,7 @@
 				TargetAttributes = {
 					80F5BA671B2837FB00B89FE7 = {
 						CreatedOnToolsVersion = 6.3.2;
-						DevelopmentTeam = 7TX62B59X4;
+						DevelopmentTeam = B96QXD8K8E;
 					};
 					80F5BA831B2837FB00B89FE7 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -278,10 +278,10 @@
 				80F5BAA61B283B5500B89FE7 /* TFHppleElement.m in Sources */,
 				80F5BAA71B283B5500B89FE7 /* XPathQuery.m in Sources */,
 				80F5BAA51B283B5500B89FE7 /* TFHpple.m in Sources */,
-				80F5BA741B2837FB00B89FE7 /* MasterViewController.m in Sources */,
+				80F5BA741B2837FB00B89FE7 /* TopNewsViewController.m in Sources */,
 				80E85AA21B32797200106AE5 /* SourcesViewController.m in Sources */,
 				80F5BA6E1B2837FB00B89FE7 /* main.m in Sources */,
-				80F5BA771B2837FB00B89FE7 /* DetailViewController.m in Sources */,
+				80F5BA771B2837FB00B89FE7 /* ArticleViewController.m in Sources */,
 				80F5BA971B28388400B89FE7 /* Article.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -417,6 +417,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -431,6 +432,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -13,6 +13,7 @@
 
 @property (weak, nonatomic) IBOutlet UISwitch *switchWSJ;
 @property (weak, nonatomic) IBOutlet UISwitch *switchNYT;
+@property (strong, nonatomic) IBOutlet UISwitch *switchUSA;
 
 @property NSUserDefaults *prefs;  //load NSUserDefaults
 @property NSMutableArray *sources;  //declare array to be stored in NSUserDefaults

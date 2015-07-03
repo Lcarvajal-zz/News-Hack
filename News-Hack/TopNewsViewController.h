@@ -1,5 +1,5 @@
 //
-//  MasterViewController.h
+//  TopNewsViewController.h
 //  News-Hack
 //
 //  Created by Lukas Carvajal on 6/10/15.
@@ -9,13 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "Article.h"
 
-@class DetailViewController;
+@class ArticleViewController;
 
-@interface MasterViewController : UITableViewController
+@interface TopNewsViewController : UITableViewController
 
 - (NSString*) translateURL: (NSString*) url;
 
-@property (strong, nonatomic) DetailViewController *detailViewController;
+@property (strong, nonatomic) ArticleViewController *detailViewController;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 
 

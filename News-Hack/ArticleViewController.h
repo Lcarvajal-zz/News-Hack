@@ -1,5 +1,5 @@
 //
-//  DetailViewController.h
+//  ArticleViewController.h
 //  News-Hack
 //
 //  Created by Lukas Carvajal on 6/10/15.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DetailViewController : UIViewController
+@interface ArticleViewController : UIViewController
 
 @property (strong, nonatomic) NSString* articleURL;
 @property (weak, nonatomic) IBOutlet UIWebView *article;
