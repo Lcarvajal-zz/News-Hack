@@ -18,8 +18,6 @@
 
 - (void)configureView {
     [_article loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.articleURL]]];
-    
-    NSLog(@"%@", self.articleURL);
    
 }
 

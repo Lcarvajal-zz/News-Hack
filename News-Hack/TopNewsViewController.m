@@ -16,18 +16,14 @@
 
 @interface TopNewsViewController ()
 
-@property NSMutableArray *wsjArticles; // The Wall Street Journal articles
 @property NSMutableArray *nytArticles; // The New York Times articles
 @property NSMutableArray *usaArticles; // USA Today articles
-
-@property int numArticles;             // number of articles
-
-@property NSUserDefaults *prefs;    // load NSUserDefaults
-@property NSMutableArray *sources;  // declare array to be stored in NSUserDefaults
 
 @end
 
 @implementation TopNewsViewController
+
+@dynamic tableView;
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -50,29 +46,28 @@
                       forControlEvents:UIControlEventValueChanged];
     }
     
-    // load user preferences
-    if (!self.prefs) {
-        _prefs = [NSUserDefaults standardUserDefaults];
-    }
-    if (!self.sources) {
+    // Get current preferences.
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // User preferences have not been set! First launch.
+    if (![defaults boolForKey:@"hasBeenLaunched"]) {
         
-        @try {
-            _sources = [[ NSMutableArray alloc] initWithArray:[_prefs arrayForKey:@"favourites"]];
-        }
-        @catch (NSException *ex) {
+        [defaults setBool:YES forKey:@"hasBeenLaunched"];
+        [defaults setBool:YES forKey:@"NYT"];
+        [defaults setBool:YES forKey:@"USA"];
+        [defaults synchronize];
+    }
+    
+    // Get current preferences.
+    BOOL nyt = [defaults boolForKey:@"NYT"];
+    BOOL usa = [defaults boolForKey:@"USA"];
 
-            _sources = [[ NSMutableArray alloc] initWithObjects:@"1",@"1", @"1", nil];
-            [_prefs setObject:_sources forKey:@"favourites"];  //set the prev Array for key value "favourites"
-        }
-        
-    }
+    // Load articles if user wants them.
+    if (nyt)
+        [self loadNewYorkTimes];
     
-    _sources = [[ NSMutableArray alloc] initWithObjects:@"1",@"1", @"1", nil];
-    
-    self.numArticles = 0;
-    //[self loadWallStreetJournal];
-    [self loadNewYorkTimes];
-    [self loadUSAToday];
+    if (usa)
+        [self loadUSAToday];
     
     
     // set back button for next view
@@ -91,52 +86,7 @@
     return UIStatusBarStyleLightContent;
 }
 
-- (void)refresh {
-    
-    [self.wsjArticles removeAllObjects];
-    [self.nytArticles removeAllObjects];
-    [self.usaArticles removeAllObjects];
-    
-    [self.view setNeedsDisplay];
-}
-
 // CUSTOM METHODS
-
--(void)loadWallStreetJournal {
-    // download webpage
-    NSURL *wsjUrl = [NSURL URLWithString:@"http://www.wsj.com/"];
-    NSData *wsjHtmlData = [NSData dataWithContentsOfURL:wsjUrl];
-    
-    // create parser
-    TFHpple *wsjParser = [TFHpple hppleWithHTMLData:wsjHtmlData];
-    
-    // array for holding nyt objects
-    NSString *wsjArticleURL = @"//a[@class='wsj-headline-link']";
-    NSArray *wsjNodes = [wsjParser searchWithXPathQuery:wsjArticleURL];
-    
-    // loop through articles
-    NSMutableArray *wsjNews = [[NSMutableArray alloc] initWithCapacity:0];
-    for (int i = 0; i < 30; i++) {
-        
-        TFHppleElement *element = [wsjNodes objectAtIndex:i];
-        
-        // create nyt object
-        Article *wallStreetJournal = [[Article alloc] init];
-        [wsjNews addObject:wallStreetJournal];
-        
-        // tites
-        wallStreetJournal.title = [[element firstChild] content];
-        
-        // urls
-        wallStreetJournal.url = [self translateURL: [element objectForKey:@"href"]];
-        
-        self.numArticles++;
-    }
-    
-    // 8
-    self.wsjArticles = wsjNews;
-    [self.tableView reloadData];
-}
 
 -(void)loadNewYorkTimes {
     
@@ -161,8 +111,6 @@
         
         // urls
         newYorkTimes.url = [self translateURL: [object[i] valueForKey:@"url"]];
-        
-        self.numArticles++;
     }
     
     self.nytArticles = nytNews;
@@ -194,8 +142,6 @@
         
         // Add article to arrays.
         [usaNews addObject:usaToday];
-        
-        self.numArticles++;
     }
     
     self.usaArticles = usaNews;
@@ -228,23 +174,23 @@
 
 - (NSString*) translateURL:(NSString *)url {
     
-    // "translate" article from japanese
+    // "translate" article from japanese.
     url = [ @"http://translate.google.com/translate?sl=ja&tl=en&u=" stringByAppendingString: url];
     
-    // download webpage
+    // Download webpage.
     NSURL *exUrl = [NSURL URLWithString:url];
     NSData *htmlData = [NSData dataWithContentsOfURL:exUrl];
     
-    // create parser
+    // Create parser.
     TFHpple *parser = [TFHpple hppleWithHTMLData:htmlData];
     
-    // get url from google translated iframe
+    // Get url from google translated iframe.
     NSString *articleURL = @"//iframe";
     NSArray *node = [parser searchWithXPathQuery:articleURL];
     TFHppleElement *element = [node objectAtIndex:0];
     url = [element objectForKey:@"src"];
     
-    // add google translate url
+    // Add google translate url.
     url = [@"http://translate.google.com" stringByAppendingString: url];
     
     return url;
@@ -253,7 +199,29 @@
 
 
 - (void)getLatestArticles {
-    [self.refreshControl endRefreshing];    // end refresh on pull down
+    
+    // Reset articles.
+    [self.nytArticles removeAllObjects];
+    [self.usaArticles removeAllObjects];
+    
+    // Pull current preferences.
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL nyt = [defaults boolForKey:@"NYT"];
+    BOOL usa = [defaults boolForKey:@"USA"];
+    
+    // Reload articles.
+    // Load articles if user wants them.
+    if (nyt)
+        [self loadNewYorkTimes];
+    
+    if (usa)
+        [self loadUSAToday];
+    
+    // Reload table view data.
+    [self.tableView reloadData];
+    
+    // End refresh on pull down.
+    [self.refreshControl endRefreshing];
 }
 
 // END OF CUSTOM METHODS
@@ -266,15 +234,11 @@
         
         Article *object = [[Article alloc] init];
         
-        if (indexPath.row < [self.wsjArticles count])
-            object = self.wsjArticles[indexPath.row];
-        else if (indexPath.row < ([self.wsjArticles count]
-                                  + [self.nytArticles count]))
-            object = self.nytArticles[indexPath.row - [self.wsjArticles count]];
-        else if (indexPath.row < ([self.wsjArticles count]
-                                  + [self.nytArticles count]
+        if (indexPath.row < [self.nytArticles count])
+            object = self.nytArticles[indexPath.row];
+        else if (indexPath.row < ([self.nytArticles count]
                                   + [self.usaArticles count]))
-            object = self.usaArticles[indexPath.row - [self.wsjArticles count] - [self.nytArticles count]];
+            object = self.usaArticles[indexPath.row - [self.nytArticles count]];
         
         NSString* articleUrlPass = [[NSString alloc] init];
         articleUrlPass = object.url;
@@ -283,10 +247,6 @@
         controller.articleURL = articleUrlPass;
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
-    }
-    else if ([[segue identifier] isEqualToString:@"showSources"]) {
-        SourcesViewController *controller = segue.destinationViewController;
-        controller.sources = [[NSArray alloc] initWithArray:self.sources];
     }
 }
 
@@ -309,14 +269,10 @@
     
     switch (section) {
         case 0:
-            headerLabel.text = @"Wall Street Journal";
-            return sectionHeaderView;
-            break;
-        case 1:
             headerLabel.text = @"New York Times";
             return sectionHeaderView;
             break;
-        case 2:
+        case 1:
             headerLabel.text = @"USA Today";
             return sectionHeaderView;
             break;
@@ -333,18 +289,15 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return [self.wsjArticles count];
-            break;
-        case 1:
             return [self.nytArticles count];
             break;
-        case 2:
+        case 1:
             return [self.usaArticles count];
             break;
     }
@@ -361,32 +314,14 @@
     }
     
     if (indexPath.section == 0) {
-        Article *thisArticle = [self.wsjArticles objectAtIndex:indexPath.row];
-        cell.textLabel.text = thisArticle.title;
-    } else if (indexPath.section == 1) {
         Article *thisArticle = [self.nytArticles objectAtIndex:indexPath.row];
         cell.textLabel.text = thisArticle.title;
-    } else if (indexPath.section == 2) {
+    } else if (indexPath.section == 1) {
         Article *thisArticle = [self.usaArticles objectAtIndex:indexPath.row];
         cell.textLabel.text = thisArticle.title;
     }
     
     return cell;
 }
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.wsjArticles removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-    }
-}
-
 
 @end

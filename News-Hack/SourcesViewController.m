@@ -17,34 +17,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // set preferences
-    _prefs = [NSUserDefaults standardUserDefaults];
-    _sources = [[ NSMutableArray alloc] initWithArray:[_prefs arrayForKey:@"favourites"]];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    [_switchWSJ addTarget:self action:@selector(changeWSJ:) forControlEvents:UIControlEventValueChanged];
-    [_switchNYT addTarget:self action:@selector(changeNYT:) forControlEvents:UIControlEventValueChanged];
-    [_switchUSA addTarget:self action:@selector(changeUSA:) forControlEvents:UIControlEventValueChanged];
+    // Pull current user preferences.
+    BOOL nyt = [defaults boolForKey:@"NYT"];
+    BOOL usa = [defaults boolForKey:@"USA"];
     
-    // turn source switch on or off
-    if([self.sources count] > 0) {
-        if ([_sources[0] isEqualToString:@"1"])
-            [_switchWSJ setOn:YES animated:NO];
-        else
-            [_switchWSJ setOn:NO animated:NO];
+    // Set switches based on current user preferences.
+    if (!nyt)
+        [self.nytSwitchOutlet setOn:NO animated:NO];
+    else
+        [self.nytSwitchOutlet setOn:YES animated:NO];
     
-        if ([_sources[1] isEqualToString:@"1"])
-            [_switchNYT setOn:YES animated:NO];
-        else
-            [_switchNYT setOn:NO animated:NO];
+    if (!usa)
+        [self.usaSwitchOutlet setOn:NO animated:NO];
+    else
+        [self.usaSwitchOutlet setOn:YES animated:NO];
     
-        if ([_sources[2] isEqualToString:@"1"])
-            [_switchUSA setOn:YES animated:NO];
-        else
-            [_switchUSA setOn:NO animated:NO];
-    }
-    else {
-        NSLog(@"not working");
-    }
+    [self.nytSwitchOutlet addTarget:self
+                      action:@selector(nytSwitch:) forControlEvents:UIControlEventValueChanged];
+    [self.usaSwitchOutlet addTarget:self
+                             action:@selector(usaSwitch:) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -52,51 +45,42 @@
     // Dispose of any resources that can be recreated.
 }
 
-// handle switch clicks
-- (void)changeWSJ: (id)sender {
-    NSLog( @"touched" );
-
-    if ([_sources[0] isEqualToString: @"1"])
-        _sources[0] = @"0";
-    else
-        _sources[0] = @"1";
+- (IBAction)nytSwitch:(id)sender {
     
-    [_prefs setObject:_sources forKey:@"favourites"];
+    // Pull current preferences.
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // Turn switch on or off and store correct user setting.
+    if ([self.nytSwitchOutlet isOn]) {
+        [self.nytSwitchOutlet setOn:YES animated:YES];
+        [defaults setBool:YES forKey:@"NYT"];
+    }
+    else {
+        
+        [self.nytSwitchOutlet setOn:NO animated:YES];
+        [defaults setBool:NO forKey:@"NYT"];
+    }
+    
+    // Sync user preferences.
+    [defaults synchronize];
 }
 
-// handle switch clicks
-- (void)changeNYT: (id)sender {
-    NSLog( @"touched" );
+- (IBAction)usaSwitch:(id)sender {
     
-    if ([_sources[1] isEqualToString: @"1"])
-        _sources[1] = @"0";
-    else
-        _sources[1] = @"1";
+    // Pull current preferences.
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    [_prefs setObject:_sources forKey:@"favourites"];
+    // Turn switch on or off and store correct user setting.
+    if ([self.usaSwitchOutlet isOn]) {
+        [self.usaSwitchOutlet setOn:YES animated:YES];
+        [defaults setBool:YES forKey:@"USA"];
+    }
+    else {
+        [self.usaSwitchOutlet setOn:NO animated:YES];
+        [defaults setBool:NO forKey:@"USA"];
+    }
+    
+    // Sync user preferences.
+    [defaults synchronize];
 }
-
-// handle switch clicks
-- (void)changeUSA: (id)sender {
-    NSLog( @"touched" );
-    
-    if ([_sources[2] isEqualToString: @"1"])
-        _sources[2] = @"0";
-    else
-        _sources[2] = @"1";
-    
-    [_prefs setObject:_sources forKey:@"favourites"];
-}
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 @end

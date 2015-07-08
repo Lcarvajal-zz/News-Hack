@@ -11,7 +11,7 @@
 @interface Article : NSObject
 
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, copy) NSString *description;
+@property (nonatomic, copy) NSString *snippet;
 @property (nonatomic, copy) NSString *url;
 
 @end
