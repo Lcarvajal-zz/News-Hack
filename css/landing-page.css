@@ -10,21 +10,21 @@ html {
     height: 100%;
 }
 
-a:hover {
-    color: #00079a;
-    text-decoration: none;
-}
-
 a:active {
     text-decoration: none;
     color: #00079a;
 }
 
-footer a:link {
+a:link {
     color: gray;
 }
 
-footer a:hover {
+a:visited {
+    color: gray;
+    text-decoration: none;
+}
+
+a:hover {
     color: #00079a;
     text-decoration: none;
 }
