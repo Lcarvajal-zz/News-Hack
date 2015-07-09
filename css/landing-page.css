@@ -10,6 +10,24 @@ html {
     height: 100%;
 }
 
+a:link {
+    color: white;
+}
+
+a:hover {
+    color: #00079a;
+    text-decoration: none;
+}
+
+footer a:link {
+    color: gray;
+}
+
+footer a:hover {
+    color: #00079a;
+    text-decoration: none;
+}
+
 body,
 h1,
 h2,
