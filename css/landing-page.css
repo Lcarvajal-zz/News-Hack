@@ -10,13 +10,14 @@ html {
     height: 100%;
 }
 
-a:link {
-    color: white;
-}
-
 a:hover {
     color: #00079a;
     text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+    color: #00079a;
 }
 
 footer a:link {
@@ -27,6 +28,20 @@ footer a:hover {
     color: #00079a;
     text-decoration: none;
 }
+
+#banner-link a:link{
+    color:white;
+}
+#banner-link a:visited{
+    color:white;
+}
+#banner-link a:hover{
+    color: #00079a;
+}
+#banner-link a:active{
+    color: #00079a;
+}
+
 
 body,
 h1,
@@ -65,7 +80,7 @@ h6 {
 
 .intro-message > h1 {
     margin: 0;
-    text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+    text-shadow: 2px 2px 3px #00079a;
     font-size: 5em;
 }
 
@@ -76,7 +91,7 @@ h6 {
 }
 
 .intro-message > h3 {
-    text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+    text-shadow: 2px 2px 3px #000000;
 }
 
 @media(max-width:767px) {
