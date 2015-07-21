@@ -17,14 +17,28 @@
 #pragma mark - Managing the detail item
 
 - (void)configureView {
-    [_article loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.articleURL]]];
+    
+    if (self.articleURL) {
+        
+        [self.article loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.articleURL]]];
+        
+    }
+    else
+        self.navigationItem.title = @"News Hack Error";
    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    self.article.dataDetectorTypes = UIDataDetectorTypeNone;
+    
+    // Use article title for navigation bar title.
+    if (self.articleTitle)
+        self.navigationItem.title = @"News Hack(ed)";
+    
+    // Use web view to display article.
     [self configureView];
 }
 
@@ -37,5 +51,6 @@
 {
     return UIStatusBarStyleLightContent;
 }
+
 
 @end

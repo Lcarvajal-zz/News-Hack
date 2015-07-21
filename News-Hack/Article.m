@@ -11,7 +11,10 @@
 @implementation Article
 
 @synthesize title = _title;
-@synthesize snippet = _snippet;
+@synthesize author = _author;
 @synthesize url = _url;
+@synthesize category = _category;
+@synthesize snippet = _snippet;
+@synthesize content = _content;
 
 @end

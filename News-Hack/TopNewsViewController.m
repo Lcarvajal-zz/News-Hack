@@ -61,7 +61,8 @@
     // Get current preferences.
     BOOL nyt = [defaults boolForKey:@"NYT"];
     BOOL usa = [defaults boolForKey:@"USA"];
-
+    
+    
     // Load articles if user wants them.
     if (nyt)
         [self loadNewYorkTimes];
@@ -72,7 +73,13 @@
     
     // set back button for next view
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    // Reload table view data.
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -90,30 +97,29 @@
 
 -(void)loadNewYorkTimes {
     
-    // Link for GET request.
-    NSURL *url = [[NSURL alloc] initWithString:@"http://api.nytimes.com/svc/topstories/v1/home.json?api-key=bedbf403ee7eb8016c6796596b0384f8:7:72428141"];
+    // Link for GET request from News Hack web service.
+    NSURL *url = [[NSURL alloc] initWithString:@"http://newshackapp.bitnamiapp.com/News-Hack-Web-Service/readArticlesTable.php"];
     
-    // handle JSON and receive nyt results
+    // Array for holding all articles.
+    self.nytArticles = [[NSMutableArray alloc] initWithCapacity:0];
+    
+    // Handle JSON and receive News Hack web service results.
     NSDictionary* dict = [self setUpJSON:url];
-    NSArray *object = [[NSArray alloc] init];
-    object = [dict objectForKey:@"results"];
     
-    // Set article properties for entire New York Times articles array.
-    NSMutableArray *nytNews = [[NSMutableArray alloc] initWithCapacity:0];
-    for (int i = 0; i < [object count]; i++) {
+    // Store results in article objects in  nytNews array.
+    for (id object in dict) {
         
-        // create nyt object
-        Article *newYorkTimes = [[Article alloc] init];
-        [nytNews addObject:newYorkTimes];
+        Article *article = [[Article alloc] init];
+        article.title = [object valueForKey:@"title"];
+        article.author = [[[object valueForKey:@"author"] lowercaseString] capitalizedString];
+        article.url = [self translateURL: [object valueForKey:@"url"]] ;
+        article.category = [object valueForKey:@"category"];
+        article.snippet = [object valueForKey:@"snippet"];
+        article.content = [object valueForKey:@"content"];
         
-        // tites
-        newYorkTimes.title = [object[i] valueForKey:@"title"];
-        
-        // urls
-        newYorkTimes.url = [self translateURL: [object[i] valueForKey:@"url"]];
+        [self.nytArticles addObject:article];
     }
     
-    self.nytArticles = nytNews;
     [self.tableView reloadData];
 }
 
@@ -122,23 +128,26 @@
     // Link for GET request.
     NSURL *url = [[NSURL alloc] initWithString:@"http://api.usatoday.com/open/articles?expired=true&count=20&encoding=json&api_key=d7hw56bu2ve9sxmq4yf78452"];
     
-    // handle JSON and receive USA Today results
+    // Handle JSON and receive USA Today results.
     NSDictionary* dict = [self setUpJSON:url];
     NSArray *object = [[NSArray alloc] init];
     object = [dict objectForKey:@"stories"];
     
-    // Set article properties for entire New York Times articles array.
+    // Set article properties for entire USA Today articles array.
     NSMutableArray *usaNews = [[NSMutableArray alloc] initWithCapacity:0];
     for (int i = 0; i < [object count]; i++) {
         
-        // create nyt object
+        // Create usaToday article.
         Article *usaToday = [[Article alloc] init];
         
-        // tites
+        // Titles.
         usaToday.title = [object[i] valueForKey:@"title"];
         
-        // urls
+        // URLs.
         usaToday.url = [self translateURL: [object[i] valueForKey:@"link"]];
+        
+        // Authors, need to be in capitalized format.
+        usaToday.author = [object[i] valueForKey:@"author"];
         
         // Add article to arrays.
         [usaNews addObject:usaToday];
@@ -150,7 +159,7 @@
 
 - (NSDictionary*) setUpJSON:(NSURL*) url {
     
-    // Prepare request object
+    // Prepare request object.
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url
                                                 cachePolicy:NSURLRequestReturnCacheDataElseLoad
                                             timeoutInterval:30];
@@ -240,11 +249,9 @@
                                   + [self.usaArticles count]))
             object = self.usaArticles[indexPath.row - [self.nytArticles count]];
         
-        NSString* articleUrlPass = [[NSString alloc] init];
-        articleUrlPass = object.url;
-        
         ArticleViewController *controller = segue.destinationViewController;
-        controller.articleURL = articleUrlPass;
+        controller.articleTitle = object.title;
+        controller.articleURL = object.url;
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
@@ -269,7 +276,7 @@
     
     switch (section) {
         case 0:
-            headerLabel.text = @"New York Times";
+            headerLabel.text = @"The New York Times";
             return sectionHeaderView;
             break;
         case 1:
@@ -313,15 +320,34 @@
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
+    UILabel *articleTitleLabel = (UILabel *)[cell viewWithTag:1];
+    UILabel *articleAuthorLabel = (UILabel *)[cell viewWithTag:2];
+    UILabel *articleSnippetLabel = (UILabel *)[cell viewWithTag:3];
+    
+    
     if (indexPath.section == 0) {
         Article *thisArticle = [self.nytArticles objectAtIndex:indexPath.row];
-        cell.textLabel.text = thisArticle.title;
+        
+        articleTitleLabel.text = thisArticle.title;
+        articleAuthorLabel.text = thisArticle.author;
+        articleSnippetLabel.text = thisArticle.snippet;
     } else if (indexPath.section == 1) {
         Article *thisArticle = [self.usaArticles objectAtIndex:indexPath.row];
-        cell.textLabel.text = thisArticle.title;
+        
+        articleTitleLabel.text = thisArticle.title;
+        articleAuthorLabel.text = thisArticle.author;
+        articleSnippetLabel.text = @"";
     }
     
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0) {
+        return 200;
+    }
+    return 120;
 }
 
 @end
