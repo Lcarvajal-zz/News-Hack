@@ -13,7 +13,7 @@ News Hack now also offers free access to USAToday articles.
 Below you'll find some information on how News Hack brings free news to the world.
 
 
-###Pulling Article Titles and URLs
+###Accessing Article Information
 The News Hack web service is hosted on Amazon Web Services with a LAMP architecture. 
 It is responsible for pulling article titles, authors, urls, and snippets from different news sources.
 For The New York Times and USAToday, it can do this by making API requests with a bit of php.

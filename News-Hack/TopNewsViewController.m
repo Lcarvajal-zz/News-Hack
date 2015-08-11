@@ -16,8 +16,9 @@
 
 @interface TopNewsViewController ()
 
-@property NSMutableArray *nytArticles; // The New York Times articles
-@property NSMutableArray *usaArticles; // USA Today articles
+@property NSMutableArray *nytArticles;  // The New York Times articles
+@property NSMutableArray *usaArticles;  // USA Today articles
+@property NSUserDefaults *defaults;     // current defaults
 
 @end
 
@@ -30,6 +31,39 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         self.clearsSelectionOnViewWillAppear = NO;
         self.preferredContentSize = CGSizeMake(320.0, 600.0);
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    // Get current preferences.
+    self.defaults = [NSUserDefaults standardUserDefaults];
+    
+    // Reload data if sources change.
+    if ([self.defaults boolForKey:@"sourcesChanged"]){
+        
+        // Reset.
+        [self.defaults setBool:NO forKey:@"sourcesChanged"];
+        
+        // Reset articles.
+        [self.nytArticles removeAllObjects];
+        [self.usaArticles removeAllObjects];
+        
+        // Pull current preferences.
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        BOOL nyt = [defaults boolForKey:@"NYT"];
+        BOOL usa = [defaults boolForKey:@"USA"];
+        
+        // Reload articles.
+        // Load articles if user wants them.
+        if (nyt)
+            [self loadNewYorkTimes];
+        
+        if (usa)
+            [self loadUSAToday];
+        
+        // Reload table view data.
+        [self.tableView reloadData];
     }
 }
 
@@ -47,20 +81,21 @@
     }
     
     // Get current preferences.
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.defaults = [NSUserDefaults standardUserDefaults];
     
     // User preferences have not been set! First launch.
-    if (![defaults boolForKey:@"hasBeenLaunched"]) {
+    if (![self.defaults boolForKey:@"hasBeenLaunched"]) {
         
-        [defaults setBool:YES forKey:@"hasBeenLaunched"];
-        [defaults setBool:YES forKey:@"NYT"];
-        [defaults setBool:YES forKey:@"USA"];
-        [defaults synchronize];
+        [self.defaults setBool:YES forKey:@"hasBeenLaunched"];
+        [self.defaults setBool:YES forKey:@"NYT"];
+        [self.defaults setBool:YES forKey:@"USA"];
+        [self.defaults setBool:NO forKey:@"sourcesChanged"];
+        [self.defaults synchronize];
     }
     
     // Get current preferences.
-    BOOL nyt = [defaults boolForKey:@"NYT"];
-    BOOL usa = [defaults boolForKey:@"USA"];
+    BOOL nyt = [self.defaults boolForKey:@"NYT"];
+    BOOL usa = [self.defaults boolForKey:@"USA"];
     
     
     // Load articles if user wants them.
@@ -74,12 +109,6 @@
     // set back button for next view
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    
-    // Reload table view data.
-    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -149,6 +178,9 @@
         // Authors, need to be in capitalized format.
         usaToday.author = [object[i] valueForKey:@"author"];
         
+        // Authors, need to be in capitalized format.
+        usaToday.snippet = [object[i] valueForKey:@"description"];
+        
         // Add article to arrays.
         [usaNews addObject:usaToday];
     }
@@ -158,6 +190,9 @@
 }
 
 - (NSDictionary*) setUpJSON:(NSURL*) url {
+    
+    // Declare dictionary of urls to be returned.
+    NSDictionary *dict;
     
     // Prepare request object.
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url
@@ -174,10 +209,21 @@
                                     returningResponse:&response
                                                 error:&error];
     
-    // Construct Array around Data from response.
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:urlData
-                                                         options:0
-                                                           error:&error];
+    // Check for error in retrieving data.
+    if (urlData != nil)
+    {
+        dict = [NSJSONSerialization JSONObjectWithData:urlData options: NSJSONReadingMutableContainers error: &error];
+        
+        return dict;
+    }
+    else
+    {
+        if (error != nil)
+        {
+            NSLog(@"Error description=%@", [error description]);
+        }
+    }
+    
     return dict;
 }
 
@@ -292,7 +338,21 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 50.0f;
+    
+    BOOL nyt = [self.defaults boolForKey:@"NYT"];
+    BOOL usa = [self.defaults boolForKey:@"USA"];
+    
+    if (nyt && (section == 0)) {
+        
+        return 50.0f;
+    }
+    
+    if (usa && (section == 1)) {
+        
+        return 50.0f;
+    }
+    
+    return 0.0f;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -313,19 +373,34 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
+    static NSString *USATodayCellIdentifier = @"USATodayCell";
+    UITableViewCell *cell;
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    if (indexPath.section == 0) {
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
+    } else if (indexPath.section == 1) {
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:USATodayCellIdentifier];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:USATodayCellIdentifier];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
     }
     
     UILabel *articleTitleLabel = (UILabel *)[cell viewWithTag:1];
-    UILabel *articleAuthorLabel = (UILabel *)[cell viewWithTag:2];
     UILabel *articleSnippetLabel = (UILabel *)[cell viewWithTag:3];
     
     
     if (indexPath.section == 0) {
+        UILabel *articleAuthorLabel = (UILabel *)[cell viewWithTag:2];
+        
         Article *thisArticle = [self.nytArticles objectAtIndex:indexPath.row];
         
         articleTitleLabel.text = thisArticle.title;
@@ -335,8 +410,7 @@
         Article *thisArticle = [self.usaArticles objectAtIndex:indexPath.row];
         
         articleTitleLabel.text = thisArticle.title;
-        articleAuthorLabel.text = thisArticle.author;
-        articleSnippetLabel.text = @"";
+        articleSnippetLabel.text = thisArticle.snippet;
     }
     
     return cell;
@@ -347,7 +421,7 @@
     if (indexPath.section == 0) {
         return 200;
     }
-    return 120;
+    return 131;
 }
 
 @end
