@@ -1,5 +1,4 @@
-#News Hack
-##for iOS
+#News Hack - for iOS
 [by Lukas Carvajal](https://lcarvajal.github.io)
 
 ###Free The News
