@@ -1,7 +1,7 @@
-#News Hack - for iOS
+# News Hack - for iOS
 [by Lukas Carvajal](https://lcarvajal.github.io)
 
-###Free The News
+### Free The News
 In this day and age, restricting people from accessing information is restricting them from their freedom to aquire knowledge.
 News Hack aims to get high quality news content and make it available to those who do not have the means to afford the tremendous cost of newspaper subscriptions.
 To give people their right to attain greater knowledge.
@@ -13,7 +13,7 @@ News Hack now also offers free access to USAToday articles.
 Below you'll find some information on how News Hack brings free news to the world.
 
 
-###Accessing Article Information
+### Accessing Article Information
 The News Hack web service is hosted on Amazon Web Services with a LAMP architecture. 
 It is responsible for pulling article titles, authors, urls, and snippets from different news sources.
 For The New York Times and USAToday, it can do this by making API requests with a bit of php.
@@ -26,19 +26,19 @@ This makes it easy for the iOS app to quickly display the information in a Table
 By having its own web service, News Hack can get article information faster to the app than relying on API requests which are not only slower, but also limit the number of requests that can be made per day.
 Parsing web pages with the backend is also much faster than doing it through the app, also saving battery power and memory usage on the app.
 
-###Getting Past Paywalls
+### Getting Past Paywalls
 The iOS app relies on google translate to break through paywalls news content providers put up.
 By manipulating the article url, the iOS app can open a web page to view a 'translated' page from Japanese to English.
 Since Google has special access to The New York Times, The Wall Street Journal, and USAToday so that subscribers can read their content in other languages, News Hack can take advantage of 'translating' an article into English.
 This gets the user past the paywall, with the only disadvantage being a 'translating' redirect which takes a couple seconds to actually display the page.
 If someone manages to parse a google translated page for article content, the News Hack web service could make access to article content much faster.
 
-###Choosing Sources
+### Choosing Sources
 Since making a request and formating article data takes a few seconds, the time to download article info from the web service can grow quickly if multiple news sources are requested at the same time.
 To fix this issue, News Hack allows users to select their favorite sources with switches so that only their favorite sources load everytime the app opens.
 This helps cut down the time it takes to load content significantly, enhancing ux tremendously.
 
-###Search
+### Search
 Currently search is in beta and only available for The New York Times articles using their API.
 Requests are made directly to The New York Times API and take several seconds.
 This feature is really only there to allow users to search past content and access it for free.
